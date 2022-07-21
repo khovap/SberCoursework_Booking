@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+
+<head>
+    <meta charset="utf-8"/>
+
+    <title>Application</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+    <div th:replace="~{navigation :: navigation(Registration)}"/>
+</div>
+
+<div class="container pt-3 border">
+
+    <form method="POST" th:action="@{/registration/addUser}">
+        <h2>Регистрация</h2>
+        <div th:object="${client}">
+            <div class="mb-3">
+                <label for="Surname" class="form-label">Фамилия</label>
+                <input type="text"  class="form-control" id="Surname" th:field="*{surname}">
+                <p th:if="${#fields.hasErrors('surname')}" th:errorclass="error" th:errors="*{surname}"/>
+            </div>
+
+            <div class="mb-3">
+                <label for="Name" class="form-label">Имя</label>
+                <input type="text"  class="form-control" id="Name" th:field="*{name}">
+                <p th:if="${#fields.hasErrors('name')}" th:errorclass="error" th:errors="*{name}"/>
+            </div>
+            <div class="mb-3">
+                <label for="Patronymic" class="form-label">Отчество</label>
+                <input type="text"  class="form-control" id="Patronymic" th:field="*{patronymic}">
+            </div>
+            <div class="mb-3">
+                <label for="healthInsurancePolicyNumber" class="form-label">Номер полиса медицинского страхования</label>
+                <input type="text"  class="form-control" id="healthInsurancePolicyNumber" th:field="*{healthInsurancePolicyNumber}">
+            </div>
+        </div>
+            <div th:object="${userForm}">
+            <div class="mb-3">
+                <label for="phoneNumber" class="form-label">Номер мобильного телефона</label>
+                <input type="text"  class="form-control" id="phoneNumber" th:field="*{phoneNumber}" aria-describedby="phoneNumberHelp">
+                <div id="phoneNumberHelp" class="form-text">Введите 10 последих знаков номера мобильного телефона</div>
+                <p th:if="${#fields.hasErrors('phoneNumber')}" th:errorclass="error" th:errors="*{phoneNumber}"/>
+            </div>
+            <div class="mb-3">
+                <label for="Password" class="form-label">Пароль</label>
+                <input type="password" class="form-control" id="Password" th:field="*{password}">
+                <p th:if="${#fields.hasErrors('password')}" th:errorclass="error" th:errors="*{password}"/>
+            </div>
+            <div class="mb-3">
+                <label for="PasswordConfirm" class="form-label">Подтверждение пароля</label>
+                <input type="password" class="form-control" id="PasswordConfirm" th:field="*{passwordConfirm}">
+            </div>
+            <button type="submit" class="btn btn-primary">Подтвердить</button>
+        </div>
+        <br>
+        <br>
+</form>
+</div>
+</body>
+</html>
+
+
+<!--    <form:form method="POST" modelAttribute="userForm">-->
+<!--        <h2>Регистрация</h2>-->
+<!--        <div>-->
+<!--            <form:input type="text" path="username" placeholder="Username"-->
+<!--                        autofocus="true"></form:input>-->
+<!--            <form:errors path="username"></form:errors>-->
+<!--            ${usernameError}-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <form:input type="password" path="password" placeholder="Password"></form:input>-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <form:input type="password" path="passwordConfirm"-->
+<!--                        placeholder="Confirm your password"></form:input>-->
+<!--            <form:errors path="password"></form:errors>-->
+<!--            ${passwordError}-->
+<!--        </div>-->
+<!--        <button type="submit">Зарегистрироваться</button>-->
+<!--    </form:form>-->
+<!--    <a href="/">Главная</a>-->

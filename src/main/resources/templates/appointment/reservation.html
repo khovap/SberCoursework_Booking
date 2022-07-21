@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+
+<head>
+    <meta charset="utf-8"/>
+
+    <title>Application</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+    <div th:replace="~{navigation :: navigation(Appiontment)}"/>
+</div>
+
+<div class="container p-3 border">
+    <div class="row">
+        <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+            <form th:action="@{/appointment/chosenMedicalService/}" >
+                <h1>Выберите специализацию</h1>
+                <span th:if="${allMedicalServices.size() == 0}">Список cпециализаций пуст</span>
+                <table th:if="${allMedicalServices.size() > 0}" class="table table-bordered">
+                    <thead class="thead-dark">
+                    <tr>
+                        <td>Специализация</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="medicalService : ${allMedicalServices}">
+                        <td class="text-left">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="radio" class="form-check-inline sm" name="chosenMedicalService"
+                                           th:value="${medicalService.id}">
+                                    <label th:for="${medicalService.id}" th:text="${medicalService.name}"/>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div>
+                    <button type="submit" class="btn btn-info col-3">Выбрать</button>
+                    <br>
+                </div>
+                <br>
+            </form>
+        </div>
+        <br>
+        <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+            <!--<div class="container pt-3 border">-->
+            <h1>Наши специалисты</h1>
+
+            <br>
+            <span th:if="${specialists.size() == 0}">Список специалистов пуст</span>
+            <br>
+            <form method="GET" th:action="@{/appointment/chosenSpecialist}">
+                <tr th:each="specialist : ${specialists}">
+                    <td class="text-left">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-inline sm" name="chosenSpecialist"
+                                       th:value="${specialist.id}">
+                                <label th:for="${specialist.id}" th:text="${specialist}"/>
+                            </label>
+                        </div>
+                        <table border-style="1" th:if="${specialist.getWorkDays().size() > 0}"
+                               class="table table-bordered">
+                            <thead class="thead-dark">
+                            <tr>
+                                <td>День недели</td>
+                                <td>Начало приема</td>
+                                <td>Конец приема</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="workDay : ${specialist.workDays}">
+                                <td th:text="${workDay.getDayOfWeek()}"></td>
+                                <td th:text="${workDay.getSpecialistAppointmentStart()}"></td>
+                                <td th:text="${workDay.getSpecialistAppointmentEnd()}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                </tr>
+<!--                <div sec:authorize="isAuthenticated()">-->
+                <div sec:authorize="hasRole('ROLE_USER')">
+                    <button type="submit" class="btn btn-info col-3">Выбрать</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+    <div sec:authorize="!isAuthenticated()" >
+        <div class="row justify-content-md-center pt-3" >
+            <p class="font-weight-bold">Для записи на прием Вам необходимо авторизоваться <a th:href="@{/login}">Войти</a></p>
+        </div>
+    </div>
+
+</body>
+</html>

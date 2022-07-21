@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="utf-8"/>
+
+    <title>Application</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+
+<div th:fragment="navigation(activeTab)">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item" th:classappend="${activeTab == 'Главная страница' ? 'active' : ''}">
+                    <a class="nav-link"  th:href="@{/}">Главная</a>
+                </li>
+                <li class="nav-item" th:classappend="${activeTab == 'Личный кабинет' ? 'active' : ''}">
+                    <a class="nav-link" th:href="@{/profile/}">Личный кабинет</a>
+                <li class="nav-item" th:classappend="${activeTab == 'Запись на прием' ? 'active' : ''}">
+                    <a class="nav-link" th:href="@{/appointment/reservation}">Запись на прием</a>
+                <li class="nav-item" th:classappend="${activeTab == 'Все клиенты' ? 'active' : ''}">
+                    <a class="nav-link" th:href="@{/specialists}">Специалисты</a>
+<!--                <li class="nav-item" th:classappend="${activeTab == 'Регистратура' ? 'active' : ''}">-->
+<!--                    <a class="nav-link" th:href="@{/registry/allAppointments}">Регистратура</a>-->
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<body>
+
+<div class="container">
+    <h1>Application</h1>
+</div>
+</body>
+</html>

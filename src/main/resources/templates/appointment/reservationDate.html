@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:form="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <meta charset="utf-8"/>
+
+    <title>Application</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>jQuery UI Datepicker - Display inline</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="i18n/datepicker-ru.js"></script>
+    <script>
+        $(function () {
+            $("#datepicker").datepicker({
+                dateFormat: 'yy-mm-dd',
+                minDate: 0,
+                maxDate: +14,
+                language: "ru",
+                onSelect: function (date) {
+                    $('#datepicker_value').val(date)
+                }
+            });
+            $("#datepicker").datepicker("setDate", $('#datepicker_value').val())
+
+        });
+    </script>
+
+    <script>
+        /* Локализация datepicker */
+        $.datepicker.regional['ru'] = {
+            closeText: 'Закрыть',
+            prevText: 'Предыдущий',
+            nextText: 'Следующий',
+            currentText: 'Сегодня',
+            monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+            monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+            dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
+            dayNamesShort: ['вск', 'пнд', 'втр', 'срд', 'чтв', 'птн', 'сбт'],
+            dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+            weekHeader: 'Не',
+            dateFormat: 'dd.mm.yy',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['ru']);
+    </script>
+
+
+</head>
+
+<body>
+
+<div class="container">
+    <div th:replace="~{navigation :: navigation(Appointment)}"/>
+</div>
+
+<div class="container pt-3 border">
+    <div class="row">
+        <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+            <h1>Запись на прием</h1>
+            <form method="POST" th:action="@{/appointment/chosenAppointmentDate}">
+                <div class="container p-3">
+                    <input type="text" id="datepicker_value" name="appointmentDate">
+<!--                    <p th:if="${#fields.hasErrors('date')}" th:errorclass="error" th:errors="appointmentDate"/>-->
+                </div>
+                <div id="datepicker"></div>
+                <div class="container p-3">
+                    <button type="submit" class="btn btn-info col-3">Выбрать дату</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+            <form method="POST" th:action="@{/appointment/saveAppointment}">
+                <!--        <div th:replace="~{navigation :: navigation(Specialists)}" />-->
+                <h1>Время приема специалистa</h1>
+                <span th:if="${specialistsCurrentDate.size() == 0}">На эту дату отсутствуют свободные записи</span>
+                <div class="container p-3 border">
+                <table th:if="${specialistsCurrentDate.size() > 0}" class="table table-hover">
+                <p class="font-weight-bold" th:text="${specialistsCurrentDate.get(0).specialistName}"></p>
+                    <thead class="thead-dark">
+                    <tr>
+                        <td></td>
+                        <td>Дата</td>
+                        <td>Время</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="appointment : ${specialistsCurrentDate}">
+                        <td class="text-left">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="radio" class="form-check-inline sm" name="appointmentId"
+                                           th:value="${appointment.id}">
+                                </label>
+                            </div>
+                        </td>
+                        <td th:text="${appointment.date}"></td>
+                        <td th:text="${appointment.time}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                </div>
+                <div>
+                    <div class="container p-3">
+                        <button type="submit" class="btn btn-info ">Записаться на прием</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

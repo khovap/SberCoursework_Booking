@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+
+    <title>Application</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+    <div th:replace="~{navigation :: navigation(Client)}" />
+    <h1>Клиенты</h1>
+    <span th:if="${clients.size() == 0}">Список клиентов пуст</span>
+    <table th:if="${clients.size() > 0}" class="table table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <td>Идентификатор</td>
+            <td>Имя</td>
+            <td>Фамлилия</td>
+            <td>Отчество</td>
+            <td>Медицинский полис</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="client : ${clients}">
+            <td th:text="${client.id}"></td>
+            <td th:text="${client.name}"></td>
+            <td th:text="${client.patronymic}"></td>
+            <td th:text="${client.surname}"></td>
+            <td th:text="${client.healthInsurancePolicyNumber}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+<!--    <div>-->
+<!--        <label>Имя пользователя </label>-->
+<!--        <input type="text" id="clientName" name = "Имя" th:value="${client.name}" name="name"/>-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        <label>Фамилия </label>-->
+<!--        <input type="text" th:value="${client.surname}" surname="surname"/>-->
+<!--        <button id="add" type="submit">Добавить пользователя</button>-->
+<!--    </div>-->
+
+</div>
+</body>
+</html>
