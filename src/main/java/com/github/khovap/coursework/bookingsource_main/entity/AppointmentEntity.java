@@ -10,6 +10,7 @@ import java.sql.Time;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "appointments")
 public class AppointmentEntity {

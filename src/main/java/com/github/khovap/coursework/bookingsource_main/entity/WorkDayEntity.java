@@ -1,8 +1,6 @@
 package com.github.khovap.coursework.bookingsource_main.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
@@ -11,8 +9,10 @@ import java.time.LocalTime;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class WorkDayEntity {
     @Id
     @GeneratedValue

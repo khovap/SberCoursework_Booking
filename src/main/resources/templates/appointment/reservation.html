@@ -2,8 +2,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns="http://www.w3.org/1999/html"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
->
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="utf-8"/>
@@ -24,7 +23,7 @@
 <div class="container p-3 border">
     <div class="row">
         <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
-            <form th:action="@{/appointment/chosenMedicalService/}" >
+            <form method="GET" th:action="@{/appointment/reservation}" >
                 <h1>Выберите специализацию</h1>
                 <span th:if="${allMedicalServices.size() == 0}">Список cпециализаций пуст</span>
                 <table th:if="${allMedicalServices.size() > 0}" class="table table-bordered">
@@ -38,8 +37,8 @@
                         <td class="text-left">
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input type="radio" class="form-check-inline sm" name="chosenMedicalService"
-                                           th:value="${medicalService.id}">
+                                    <input type="radio" class="form-check-inline sm" name="msId"
+                                           th:value="${medicalService.id}" th:name = "msId">
                                     <label th:for="${medicalService.id}" th:text="${medicalService.name}"/>
                                 </label>
                             </div>
@@ -62,13 +61,13 @@
             <br>
             <span th:if="${specialists.size() == 0}">Список специалистов пуст</span>
             <br>
-            <form method="GET" th:action="@{/appointment/chosenSpecialist}">
+            <form method="GET" th:action="@{/appointment/reservation}">
                 <tr th:each="specialist : ${specialists}">
                     <td class="text-left">
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input type="radio" class="form-check-inline sm" name="chosenSpecialist"
-                                       th:value="${specialist.id}">
+                                <input type="radio" class="form-check-inline sm" name="@{/appointment/reservation}"
+                                       th:value="${specialist.id}" th:name = "specId">
                                 <label th:for="${specialist.id}" th:text="${specialist}"/>
                             </label>
                         </div>

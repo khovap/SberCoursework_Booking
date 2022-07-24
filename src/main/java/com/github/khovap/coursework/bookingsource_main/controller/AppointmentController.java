@@ -1,5 +1,6 @@
 package com.github.khovap.coursework.bookingsource_main.controller;
 
+
 import com.github.khovap.coursework.bookingsource_main.model.Appointment;
 import com.github.khovap.coursework.bookingsource_main.model.Client;
 import com.github.khovap.coursework.bookingsource_main.model.MedicalService;
@@ -34,63 +35,43 @@ public class AppointmentController {
 
 
     private List<MedicalService> allMedicalServices = new ArrayList<>();
-    private List<Specialist> specialists = new ArrayList<>();
-
-    private Appointment appointment = new Appointment();
 
 
     @GetMapping("/reservation")
-    public String getMedicalService(Model model){
-        if (allMedicalServices.isEmpty())
+    public String getMedicalServiceAndSpecialist(/*@PathVariable String userId,*/
+                                                 @RequestParam(required = false, name = "msId") Long msId,
+                                                 @RequestParam(required = false, name = "specId") Long specId,
+                                                 Model model){
+        List<Specialist> specialists = new ArrayList<>();
+        if (msId == null) {
             allMedicalServices = medicalServiceService.getAllMedicalServices();
-        model.addAttribute("allMedicalServices", allMedicalServices);
+        } else {
+            specialists = specialistService.getSpecialistsByMedicalServiceId(msId);
+        }
+        if (specId != null) {
+            return "redirect:/appointment/reservationDate?specId=" + specId;
+        }
         model.addAttribute("specialists", specialists);
+        model.addAttribute("allMedicalServices", allMedicalServices);
+        model.addAttribute("textStyle", TextStyle.FULL);
+        model.addAttribute("locale", Locale.forLanguageTag("ru"));
         return "/appointment/reservation";
-    }
-
-    @GetMapping("/chosenMedicalService")
-        public String chooseMedicalService(@RequestParam("chosenMedicalService") Long id,
-                                           Model model){
-        if (id != null)
-            specialists = specialistService.getSpecialistsByMedicalServiceId(id);
-        model.addAttribute("allMedicalServices", allMedicalServices);
-        model.addAttribute("specialists", specialists);
-        return "appointment/reservation";
-    }
-
-    @GetMapping("/chosenSpecialist")
-    @SneakyThrows
-    public String chooseSpecialist(@RequestParam("chosenSpecialist") Long id, Model model){
-        if (id != null)
-            appointment.setSpecialistId(id);
-            model.addAttribute("allMedicalServices", allMedicalServices);
-            model.addAttribute("specialists", specialists);
-        return "redirect:/appointment/reservationDate";
     }
 
     @GetMapping("/reservationDate")
     @SneakyThrows
-    public String getAppointmentDate(Model model){
-        long specId = appointment.getSpecialistId();
-        Date date = appointment.getDate();
-        String specName = null;
-        List<Appointment> specialistsCurrentDate = appointmentService.getVacantAppointmentOfSpecialistByIdOnCurrentDate(specId, date);
-//        if (!specialistsCurrentDate.isEmpty())
-//             specName = specialistsCurrentDate.get(0).getSpecialistName();
-        model.addAttribute("specialistsCurrentDate",
-                appointmentService.getVacantAppointmentOfSpecialistByIdOnCurrentDate(specId, date));
-        model.addAttribute("textStyle", TextStyle.FULL);
-        model.addAttribute("locale", Locale.forLanguageTag("ru"));
+    public String getAppointmentDate(@RequestParam(required = false, name = "specId") String specId,
+                                     @RequestParam(required = false) String date,
+                                     Model model){
+//        long specId = appointment.getSpecialistId();
+        List<Appointment> specialistsCurrentDate = new ArrayList<>();
+      if (date != null) {
+          specialistsCurrentDate = appointmentService
+                  .getVacantAppointmentOfSpecialistByIdOnCurrentDate(Long.valueOf(specId), Date.valueOf(date));
+      }
+        model.addAttribute("specialistsCurrentDate", specialistsCurrentDate);
+        model.addAttribute("specId", specId);
         return "/appointment/reservationDate";
-    }
-
-    @PostMapping("/chosenAppointmentDate")
-    @SneakyThrows
-    public String chooseTime(@RequestParam("appointmentDate") String date){
-        System.out.println(date);
-        appointment.setDate(Date.valueOf(date));
-//        appointment.setDate(date);
-        return "redirect:/appointment/reservationDate";
     }
 
     @PostMapping("/saveAppointment")
@@ -99,8 +80,7 @@ public class AppointmentController {
         String userPhoneNumber = SecurityContextHolder.getContext().getAuthentication().getName();
         Client client = clientService.getClientByPhoneNumber(userPhoneNumber);
         Long clientId = client.getId();
-        appointment.setId(appointmentId);
-        appointmentService.updateAppointment(appointment.getId(), clientId, true);
+        appointmentService.updateAppointment(appointmentId, clientId, true);
         return "redirect:/profile/";
     }
 }

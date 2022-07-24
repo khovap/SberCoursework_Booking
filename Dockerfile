@@ -4,6 +4,9 @@ ARG version=0.0.1-SNAPSHOT
 
 COPY ./target/BookingSource_main-$version.jar /usr/app/BookingSource_main.jar
 
+COPY ./src/main/resources/static /usr/app/
+COPY ./src/main/resources/templates /usr/app/
+
 WORKDIR /usr/app
 USER root
 

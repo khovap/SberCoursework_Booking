@@ -24,12 +24,12 @@ public interface WorkDayToEntityMapper {
     @Mapping(target = "dayOfWeek", source = "dayOfWeek")
     WorkDay WorkDayEntityToWorkDay(WorkDayEntity workDay);
 
-    @IterableMapping(qualifiedByName = "WorkDayEntityToWorkDay")
-    @Named("WorkDayEntityListToWorkDay")
-    List<WorkDay> WorkDayEntityListToWorkDay(List<WorkDayEntity> workDayEntity);
-
-    @IterableMapping(qualifiedByName = "WorkDayToWorkDayEntity")
-    @Named("WorkDayListToWorkDayEntity")
-    List<WorkDayEntity> WorkDayListToWorkDayEntity (List<WorkDay> workDay);
+//    @IterableMapping(qualifiedByName = "WorkDayEntityToWorkDay")
+//    @Named("WorkDayEntityListToWorkDay")
+//    List<WorkDay> WorkDayEntityListToWorkDay(List<WorkDayEntity> workDayEntity);
+//
+//    @IterableMapping(qualifiedByName = "WorkDayToWorkDayEntity")
+//    @Named("WorkDayListToWorkDayEntity")
+//    List<WorkDayEntity> WorkDayListToWorkDayEntity (List<WorkDay> workDay);
 
 }

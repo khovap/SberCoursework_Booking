@@ -3,9 +3,7 @@ package com.github.khovap.coursework.bookingsource_main.service.implementation;
 import com.github.khovap.coursework.bookingsource_main.entity.ClientEntity;
 import com.github.khovap.coursework.bookingsource_main.entity.SpecialistEntity;
 import com.github.khovap.coursework.bookingsource_main.entity.WorkDayEntity;
-import com.github.khovap.coursework.bookingsource_main.mapper.AppointmentToDTOMapper;
 import com.github.khovap.coursework.bookingsource_main.model.Appointment;
-import com.github.khovap.coursework.bookingsource_main.model.AppointmentStatDTO;
 import com.github.khovap.coursework.bookingsource_main.repository.AppointmentRepository;
 import com.github.khovap.coursework.bookingsource_main.entity.AppointmentEntity;
 import com.github.khovap.coursework.bookingsource_main.repository.ClientRepository;
@@ -14,13 +12,11 @@ import com.github.khovap.coursework.bookingsource_main.service.AppointmentEntity
 import com.github.khovap.coursework.bookingsource_main.service.exception.AppointmentAlreadyOccupiedException;
 import com.github.khovap.coursework.bookingsource_main.service.exception.AppointmentNotFoundException;
 import com.github.khovap.coursework.bookingsource_main.service.exception.ClientNotFoundException;
-import com.github.khovap.coursework.bookingsource_main.service.exception.MedicalServiceNotFoundException;
 import com.github.khovap.coursework.bookingsource_main.mapper.AppointmentToEntityMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.kafka.core.KafkaTemplate;
 
-import lombok.SneakyThrows;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,16 +43,15 @@ public class DefaultAppointmentService implements AppointmentEntityService {
     private final AppointmentToEntityMapper mapper;
 
     @Override
-    @SneakyThrows
     public Appointment getAppointmentById(long id) throws AppointmentNotFoundException {
         AppointmentEntity appointmentEntity = appointmentRepository
                 .findById(id)
-                .orElseThrow(() -> new MedicalServiceNotFoundException("Appointment not found"));
+                .orElseThrow(() -> new AppointmentNotFoundException("Appointment not found"));
         return mapper.appointmentEntityToAppointment(appointmentEntity);
     }
 
     @Override
-    public List<Appointment> getAppointmentByClient(long id){
+    public List<Appointment> getAllAppointmentByClient(long id){
         List<AppointmentEntity> appointmentEntities = appointmentRepository
                 .findAppointmentEntitiesByClientId(id);
         List<Appointment> appointments = new ArrayList<>();
@@ -108,17 +103,16 @@ public class DefaultAppointmentService implements AppointmentEntityService {
     }
 
     @Override
-    public void addAllAppointmentEntities(List<AppointmentEntity> appointmentEntities) {
+    public void addAllAppointments(List<AppointmentEntity> appointmentEntities) {
         appointmentRepository.saveAll(appointmentEntities);
     }
+
     @Override
     public void updateAppointmentsTimetable() {
-        if (LocalTime.now() == LocalTime.MIDNIGHT) {
-            List<AppointmentEntity> appointmentEntities;
-            appointmentEntities = createListOfADayAppointmentTimetable(LocalDate.now()
-                    .plusDays(14));
-            addAllAppointmentEntities(appointmentEntities);
-        }
+        List<AppointmentEntity> appointmentEntities;
+        appointmentEntities = createListOfADayAppointmentTimetable(LocalDate.now()
+                .plusMonths(1));
+        addAllAppointments(appointmentEntities);
     }
 
     @Override
@@ -140,8 +134,7 @@ public class DefaultAppointmentService implements AppointmentEntityService {
     }
 
     @Override
-    @SneakyThrows
-    public void updateAppointmentCancel(long appointmentId) throws AppointmentNotFoundException, ClientNotFoundException {
+    public void updateAppointmentCancel(long appointmentId) throws AppointmentNotFoundException {
         AppointmentEntity appointmentEntity  = appointmentRepository
                 .findById(appointmentId)
                 .orElseThrow(() ->new AppointmentNotFoundException("Appointment not found"));
@@ -152,6 +145,7 @@ public class DefaultAppointmentService implements AppointmentEntityService {
 
     @Override
     public List<AppointmentEntity> createListOfADayAppointmentTimetable(LocalDate date) {
+        if (date == null) throw new NullPointerException("Date should not be null");
         Iterable<SpecialistEntity> allSpecialists = specialistRepository.findAll(
                 Sort.by(Sort.Direction.ASC, "surname"));
         List<AppointmentEntity> appointmentEntities = new ArrayList<>();
@@ -192,15 +186,22 @@ public class DefaultAppointmentService implements AppointmentEntityService {
     }
 
     @Override
-    public void firstCreateAppointmentsTimetableNext2Week() {
+    @Scheduled(cron = "01 01 00 * * ?", zone = "Europe/Moscow")
+    public List<AppointmentEntity> createListOfACurrentDayAppointmentTimetable() {
+        LocalDate date = LocalDate.now();
+        return createListOfADayAppointmentTimetable(date);
+    }
+
+    @Override
+    public void createAppointmentsTimetableNextMonth() {
         if (!appointmentRepository.existsAppointmentEntitiesByDate(
                 Date.valueOf(LocalDate.now().plusDays(1).toString()))) {
             LocalDate date = LocalDate.now();
             List<AppointmentEntity> appointmentEntities;
-            while (date.isBefore(LocalDate.now().plusDays(14))) {
+            while (date.isBefore(LocalDate.now().plusMonths(1))) {
                 appointmentEntities = createListOfADayAppointmentTimetable(date);
                 date = date.plusDays(1);
-                addAllAppointmentEntities(appointmentEntities);
+                addAllAppointments(appointmentEntities);
             }
         }
     }

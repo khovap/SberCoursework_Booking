@@ -49,7 +49,7 @@ public class DefaultUserService implements UserDetailsService {
         user.setPassword(cryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         
-        if (clientRepository.findByPhoneNumberEquals(user.getPhoneNumber()) == null) {
+        if (!clientRepository.findByPhoneNumberEquals(user.getPhoneNumber()).isPresent()) {
             client.setPhoneNumber(user.getPhoneNumber());
             clientRepository.save(clientMapper.clientToClientEntity(client));
         }

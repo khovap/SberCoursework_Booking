@@ -71,9 +71,10 @@
     <div class="row">
         <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
             <h1>Запись на прием</h1>
-            <form method="POST" th:action="@{/appointment/chosenAppointmentDate}">
+            <form method="GET" th:action="@{/appointment/reservationDate(specId = ${specId})}" th:object="${appointment}">
                 <div class="container p-3">
-                    <input type="text" id="datepicker_value" name="appointmentDate">
+                    <input type="text" id="datepicker_value" name="date">
+                    <input type="hidden" id="specId" name="specId" th:value="${specId}">
 <!--                    <p th:if="${#fields.hasErrors('date')}" th:errorclass="error" th:errors="appointmentDate"/>-->
                 </div>
                 <div id="datepicker"></div>

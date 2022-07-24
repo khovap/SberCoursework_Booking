@@ -14,6 +14,7 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
     List<AppointmentEntity> findAppointmentEntitiesBySpecialistIdAndDateAndClientIsNull(Long specId, Date date);
 
     List<AppointmentEntity> findAppointmentEntitiesByClientId(Long id);
+
     List<AppointmentEntity> findAppointmentEntitiesBySpecialistIdAndClientNotNull(Long id);
 
 

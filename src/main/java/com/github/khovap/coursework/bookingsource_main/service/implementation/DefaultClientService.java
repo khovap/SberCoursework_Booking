@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -61,8 +62,9 @@ public class DefaultClientService implements ClientEntityService {
     }
 
     @Override
-    public Client getClientByPhoneNumber(String phoneNumber){
-        ClientEntity clientEntity = clientRepository.findByPhoneNumberEquals(phoneNumber);
+    public Client getClientByPhoneNumber(String phoneNumber) throws ClientNotFoundException{
+        ClientEntity clientEntity = clientRepository.findByPhoneNumberEquals(phoneNumber)
+                .orElseThrow(() -> new ClientNotFoundException("Client with phonenumber " + phoneNumber));
         return  mapper.clientEntityToClient(clientEntity);
     }
 }

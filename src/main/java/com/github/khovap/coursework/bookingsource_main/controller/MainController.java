@@ -2,6 +2,7 @@ package com.github.khovap.coursework.bookingsource_main.controller;
 
 
 
+import com.github.khovap.coursework.bookingsource_main.entity.UserEntity;
 import com.github.khovap.coursework.bookingsource_main.model.Appointment;
 import com.github.khovap.coursework.bookingsource_main.model.Client;
 import com.github.khovap.coursework.bookingsource_main.model.Specialist;
@@ -14,9 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,14 +41,19 @@ public class MainController {
         return "clients" ;
     }
 
-    @GetMapping("/profile/")
-    public String showClientProfile(Model model){
+    @RequestMapping("/profile/")
+    public String redirectUserIdProfile(){
+        UserEntity user =(UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return "redirect:/profile/" + user.getId();
+    }
+    @GetMapping("/profile/{userId}")
+    public String showClientProfile(@PathVariable String userId, Model model){
         List<Appointment> appointments = new ArrayList<>();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userPhoneNumber = auth.getName();
         if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_USER"))){
             Client client = clientService.getClientByPhoneNumber(userPhoneNumber);
-            appointments = appointmentEntityService.getAppointmentByClient(client.getId());
+            appointments = appointmentEntityService.getAllAppointmentByClient(client.getId());
             model.addAttribute("user", client);
         }
         if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_SPEC"))){

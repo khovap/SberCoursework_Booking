@@ -19,6 +19,7 @@ public interface SpecialistToEntityMapper {
     SpecialistEntity SpecialistToSpecialistEntity(Specialist specialist);
     @Mapping(target = "medicalServiceId", source = "specialistEntity.medicalService.id")
     @Mapping(target = "medicalServiceName", source = "specialistEntity.medicalService.name")
+    @Mapping(target = "workDays", source = "workDays")
     Specialist specialistEntityToSpecialist(SpecialistEntity specialistEntity);
 
 }
