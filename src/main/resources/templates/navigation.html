@@ -24,10 +24,6 @@
                     <a class="nav-link" th:href="@{/profile/}">Личный кабинет</a>
                 <li class="nav-item" th:classappend="${activeTab == 'Запись на прием' ? 'active' : ''}">
                     <a class="nav-link" th:href="@{/appointment/reservation}">Запись на прием</a>
-                <li class="nav-item" th:classappend="${activeTab == 'Все клиенты' ? 'active' : ''}">
-                    <a class="nav-link" th:href="@{/specialists}">Специалисты</a>
-<!--                <li class="nav-item" th:classappend="${activeTab == 'Регистратура' ? 'active' : ''}">-->
-<!--                    <a class="nav-link" th:href="@{/registry/allAppointments}">Регистратура</a>-->
             </ul>
         </div>
     </nav>
