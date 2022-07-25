@@ -1,0 +1,12 @@
+FROM postgres:14.4
+#COPY ./booking_db /usr/app/booking_db
+ADD booking_db.sql /docker-entrypoint-initdb.d
+ENV POSTGRES_DB booking
+ENV POSTGRES_USER ${POSTGRES_USER:-postgres}
+ENV POSTGRES_PASSWORD ${POSTGRES_PASSWORD:-postgres}
+
+EXPOSE 5432
+
+
+
+

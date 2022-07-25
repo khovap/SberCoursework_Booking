@@ -21,3 +21,7 @@ ENTRYPOINT ["java", "-jar", "/usr/app/BookingSource_main.jar"]
 
 ENV RUN_DEBUG=true;
 EXPOSE 8080
+
+
+
+
